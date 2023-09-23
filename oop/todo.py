@@ -27,11 +27,10 @@ class TaskList:
     def display_all_tasks(self) -> None:
         if  len(self.tasks) == 0:
             return print("--> No todo's available")
-        
-        # Divider to clean up CLI for end user
-        print("_______________________")
+
+        # Loop through each task, print to console so that user can identify each one for a number of other functions
         for index, task in enumerate(self.tasks):
-            print(f"[{index}]\nTodo: {task.get_name()}\nCompleted: {'Yes' if task.get_completion() else 'No'}\n_______")
+            print(f"[{index}]\nTodo: {task.get_name()}\nCompleted: {'Yes' if task.get_completion() else 'No'}\n")
     
     # Displays task information, grabbing it using its object functions
     def display_task(self, task) -> None:
@@ -85,7 +84,7 @@ while True:
         todo_list.display_all_tasks()        
         
         # Get task number and what the user wants to change about it
-        task_edit_form_1 = generate_cli_form(["Choose a task number to edit\n--> ", "Would you like to edit [0] name or [1] completion value?\n--> "])
+        task_edit_form_1 = generate_cli_form(["Choose a task number to edit", "Would you like to edit [0] name or [1] completion value?"])
         
         task_index = task_edit_form_1[0]
         edit_choice = task_edit_form_1[1]
@@ -105,7 +104,7 @@ while True:
 
         if edit_choice == "0":
             # Fetch new task name, and set the object name to it
-            get_name_form = generate_cli_form(["Enter new name value\n--> "])
+            get_name_form = generate_cli_form(["Enter new name value"])
             new_name = get_name_form[0]
             
             task_currently_editing.set_name(new_name)
@@ -113,7 +112,7 @@ while True:
 
         elif edit_choice == "1":
             # Set state to true or false or exit out of the current CLI loop if wrong information is given
-            get_completion_form = generate_cli_form(["Is the task completed (Y) or (N)\n--> "])
+            get_completion_form = generate_cli_form(["Is the task completed (Y) or (N)"])
             new_completion_state = get_completion_form[0]
             
             if new_completion_state == "Y":
