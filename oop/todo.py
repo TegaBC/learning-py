@@ -59,7 +59,7 @@ def generate_cli_form(questions: list) -> list:
     answers = []
     
     for question in questions:
-        answer = input(question + "\n--> ")
+        answer = input("\033[4m" + question + "\033[0m\n--> ")
         answers.append(answer)
 
     return answers    
@@ -69,7 +69,7 @@ todo_list = TaskList()
 
 # CLI Loop
 while True:
-    user_command = input("Enter a command:\n[0] View List\n[1] Create a todo\n[2] Edit a todo\n[3] Exit application\n--> ")
+    user_command = input("\033[1m" + "Enter a command:"+"\033[0m"+"\n[0] View List\n[1] Create a todo\n[2] Edit a todo\n[3] Exit application\n--> ")
 
     if user_command == "0":
         todo_list.display_all_tasks()
@@ -78,20 +78,22 @@ while True:
         task_form_answers = generate_cli_form(["Name of todo:"])
         new_task = Task(task_form_answers[0])
         todo_list.add_task(new_task)
-        print(">> New todo task created")
+        print(">> New todo: " + "'" + task_form_answers[0] + "' has been created")
 
     elif user_command == "2":
-        # Display tasks, validate user picked task. Ask to change choice or task name and then submit those changes
+        # Display tasks, generate a stage one form to gather basic info then later ask to change choice or task name and then submit those changes
         todo_list.display_all_tasks()        
-        task_index = input("Choose a task number to edit\n--> ")
         
+        # Get task number and what the user wants to change about it
+        task_edit_form_1 = generate_cli_form(["Choose a task number to edit\n--> ", "Would you like to edit [0] name or [1] completion value?\n--> "])
+        
+        task_index = task_edit_form_1[0]
+        edit_choice = task_edit_form_1[1]
+
         # Guard clause to validate task is a valid task object
         if not task_index.isdigit() or int(task_index) > len(todo_list.get_all_tasks()) - 1:
             print("Error: Did not choose a valid number or chose a number bigger that doesn't correlate to a task")
-            continue
-            
-        # Getting the edit choice and getting new values
-        edit_choice = input("Would you like to edit [0] name or [1] completion value?\n--> ")
+            continue 
         
         # Guard clause to validate if option is a valid option
         if not edit_choice.isdigit() or int(edit_choice) > 1 or int(edit_choice) < 0:
@@ -103,13 +105,16 @@ while True:
 
         if edit_choice == "0":
             # Fetch new task name, and set the object name to it
-            new_name = input("Enter new name value\n--> ")
+            get_name_form = generate_cli_form(["Enter new name value\n--> "])
+            new_name = get_name_form[0]
+            
             task_currently_editing.set_name(new_name)
             print(">> Task name successfully set to: " + new_name)
 
         elif edit_choice == "1":
             # Set state to true or false or exit out of the current CLI loop if wrong information is given
-            new_completion_state = input("Is the task completed (Y) or (N)")
+            get_completion_form = generate_cli_form(["Is the task completed (Y) or (N)\n--> "])
+            new_completion_state = get_completion_form[0]
             
             if new_completion_state == "Y":
                 task_currently_editing.set_task_completion(True)
